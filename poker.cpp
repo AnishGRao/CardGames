@@ -1,26 +1,45 @@
 #include <bits/stdc++.h>
-using std::to_string;
-void display_cards(std::vector<std::vector<std::string>> & deck)
+#include <codecvt>
+#include <fcntl.h>
+#include <locale>
+#include <stdio.h>
+#include <string>
+void display_cards(std::vector<std::vector<int>> & deck)
 {
+    printf("\t");
     for (auto i : deck)
+    {
         for (auto j : i)
-            std::cout << j << (j == i.back() ? "\n" : " ");
+            printf("\t%lc ", j);
+        printf("\n");
+    }
 }
 
-void populate_cards(std::vector<std::vector<std::string>> & deck)
+void populate_cards(std::vector<std::vector<int>> & deck)
 {
-    std::string value;
-    for (int i = 1, j = 0x01; i < 15; i++, j++)
-        value = (i <= 10 ? to_string(i) : i == 11 ? "J" : i == 12 ? "Q" : i == 13 ? "K" : "A"),
-        deck[0][i - 1] = "♠" + value, deck[1][i - 1] = "♣" + value, deck[2][i - 1] = "♡" + value,
-        deck[3][i - 1] = "♢" + value;
+    // magic, magic numbers. How fun.
+    int end = 0x1F0AF;
+    int heart = 0x1F0BF, diamond = 0x1F0CF, club = 0x1F0DF;
+    for (int i = 0x1F0A1, j = 0, k = 1; i < end; i++, k++)
+        deck[j][k - 1] = i == 0x1F0AC || i == 0x1F0BC || i == 0x1F0CC || i == 0x1F0DC ? ++i : i,
+                    j = i + 1 == end ? j + 1 : j,
+                    end = i + 1 == end
+                              ? (end == 0x1F0AF
+                                     ? heart
+                                     : end == heart ? diamond : end == diamond ? club : end == club ? end : end)
+                              : end,
+                    i = end - i > 15 ? end - 15 : i, k = i == end - 15 ? 1 : k;
 }
 
 int main()
 {
-    std::vector<std::vector<std::string>> deck(4, std::vector<std::string>(14));
-    std::vector<std::vector<std::string>> backup_deck = deck;
+    std::ios_base::sync_with_stdio(0);
+    // setlocale(LC_CTYPE, "en_US.UTF-8");
+    std::vector<std::vector<int>> deck(4, std::vector<int>(14));
+    std::vector<std::vector<int>> backup_deck = deck;
     populate_cards(deck);
-    // display_cards(deck);
-    start_game();
+    setlocale(LC_ALL, "");
+    display_cards(deck);
+
+    // start_game();
 }
