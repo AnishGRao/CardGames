@@ -1,33 +1,21 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-import time
-import os
-import subprocess
-your_path = subprocess.Popen(['readlink', '-f', 'chromedrive'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-driver = webdriver.Chrome(your_path)
 
-driver.get("https://web.whatsapp.com/")
-wait = WebDriverWait(driver, 600)
+driver = webdriver.Chrome(r'/home/anish/resume/CARDS/chromedriver')
+driver.get('https://web.whatsapp.com/')
 
-# Replace 'Friend's Name' with the name of your friend
-# or the name of a group
-target = '"Friend\'s Name"'
+name = input('Enter the name of user or group : ')
+msg = input('Enter your message : ')
+count = int(input('Enter the count : '))
+wait = WebDriverWait(driver = driver, timeout = 900)
 
-# Replace the below string with your own message
-string = "Message sent using Python!!!"
+user = driver.find_element_by_xpath('//span[@title = "{}"]'.format(name))
+user.click()
 
-x_arg = '//span[contains(@title,' + target + ')]'
-group_title = wait.until(EC.presence_of_element_located((
-        By.XPATH, x_arg
-)))
-group_title.click()
-inp_xpath = '//div[@class="input"][@dir="auto"][@data-tab="1"]'
-input_box = wait.until(EC.presence_of_element_located((
-        By.XPATH, inp_xpath
-)))
-for i in range(100):
-        input_box.send_keys(string + Keys.ENTER)
-            time.sleep(1)
+msg_box = driver.find_element_by_class_name('_2S1VP')
+msg += '\n this is a system generated message'
+
+for i in range(count):
+    msg_box.send_keys(msg)
+    button = driver.find_element_by_class_name('_2lkdt')
+    button.click()
