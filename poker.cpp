@@ -3,7 +3,13 @@
 #include <fcntl.h>
 #include <locale>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string>
+struct player{
+    bool _call, _check, _raise, _fold, _allIn;
+    int _raiseAmnt, currStack;
+    int card1, card2;
+}
 void display_cards(std::vector<std::vector<int>> & deck)
 {
     printf("\t");
@@ -14,7 +20,18 @@ void display_cards(std::vector<std::vector<int>> & deck)
         printf("\n");
     }
 }
-
+std::pair<int,int> get_num_players(){
+    int num_players;
+    int num_ai_players;
+    printf("Please enter the number of players: ");
+    scanf("%d",&num_players);
+    if (num_players<=1)
+        printf("Good job, you win.\n"),exit(0);
+    printf("\nPlease enter the number of AI players: ");
+    scanf("%d", &num_ai_players);
+    
+    return {num_players, num_ai_players};
+}
 void populate_cards(std::vector<std::vector<int>> & deck)
 {
     // magic, magic numbers. How fun.
@@ -30,7 +47,9 @@ void populate_cards(std::vector<std::vector<int>> & deck)
                               : end,
                     i = end - i > 15 ? end - 15 : i, k = i == end - 15 ? 1 : k;
 }
-
+void start_game( std::vector<std::vector<int>> &deck, std::vector<player>&player, int num_humans){
+    
+}
 int main()
 {
     std::ios_base::sync_with_stdio(0);
@@ -39,7 +58,8 @@ int main()
     std::vector<std::vector<int>> backup_deck = deck;
     populate_cards(deck);
     setlocale(LC_ALL, "");
-    display_cards(deck);
-
+    std::pair<int,int> playerAmnt = get_num_players(); 
+    std::vector<player>players(playerAmnt.second);
+    start_game(deck, players, playerAmnt.first-playerAmnt.second);
     // start_game();
 }
